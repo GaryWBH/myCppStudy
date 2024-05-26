@@ -48,7 +48,9 @@ class singleton
         static singleton* instance;
         static std::once_flag onceFlag;
 
-        //make wrong:static singleton* createInstance();
+        //回顾错误:
+        //1.将创建函数写为了 static singleton* createInstance();
+        //2.问题在于没有搞清楚创建函数到底要做什么，他不需要返回值，他只是为了创建一个实例
         static void createInstance();
 
         void deleteSingleton()

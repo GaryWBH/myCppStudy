@@ -33,7 +33,13 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <memory>
+#include <functional>
 
+/**
+ * @brief 
+ * 古老指针方式实现的单例 
+ */
 class singleton
 {
     private:
@@ -56,7 +62,30 @@ class singleton
 
     public:
         static singleton* getInstance();
-        void mySingleton(std::string);
+        void mySingleton(std::string src);
 
 };
+
+/**
+ * @brief 
+ * 一个更加现代的使用smart ptr的单例例子
+ */
+class singleton_sm 
+{
+    private:
+        singleton_sm() {};
+        ~singleton_sm() {};
+
+        static std::unique_ptr<singleton_sm, std::function<void(singleton_sm*)>> instance;
+        static std::once_flag onceFlag;
+        static void createInstance();
+
+    public:
+        // 获取单例实例的静态方法
+        static singleton_sm* getInstance() ;
+        void mySingleton(std::string src);
+
+
+};
+
 #endif //SINGLETON_H

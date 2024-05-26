@@ -35,6 +35,9 @@ void singletonMain()
     
     sg->mySingleton("hello my singleton-240525");
 
+    auto sgm = singleton_sm::getInstance();
+    sgm->mySingleton("hello my singleton-2405256"); 
+
     return ;
 }
 

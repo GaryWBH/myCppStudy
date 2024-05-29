@@ -23,6 +23,7 @@
  */
 #include <iostream>
 #include "singleton.h"
+#include "factory.h"
 
 /**
  * @brief 
@@ -100,10 +101,29 @@ void lambdaMain()
     
 }
 
+void factoryMain()
+{
+    ShapeFactory& factory = ShapeFactory::getInstance();
+
+    // 从配置文件或其他输入中获取要创建的形状类型
+    ShapeType type = CIRCLE;
+
+    auto shape = factory.createShape(type);
+    if (shape) 
+    {
+      
+        shape->draw();
+    } 
+    else 
+    {
+       
+    }
+}
 
 int main()
 {
-    singletonMain();
-    lambdaMain();
+    //singletonMain();
+    //lambdaMain();
+    factoryMain();
     return 0;
 }

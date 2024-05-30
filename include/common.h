@@ -16,10 +16,10 @@
 #include <memory>
 #include <functional>
 
-
-
-
-
+#define c_ std::cout
+#define e_ std::endl
+#define s_ std::string
+#define line_ c_<<"-------------------------"<<e_
 
 
 #endif

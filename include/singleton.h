@@ -61,7 +61,7 @@ class singleton
         void mySingleton(std::string src);
 
         singleton(const singleton&) = delete;
-        singleton& operator(const singleton&) = delete;
+        singleton& operator=(const singleton&) = delete;
 
 };
 
@@ -84,7 +84,7 @@ class singleton_sm
         static singleton_sm* getInstance() ;
         void mySingleton(std::string src);
         singleton_sm(const singleton_sm&) = delete;
-        singleton_sm& operator(const singleton_sm&) = delete;
+        singleton_sm& operator=(const singleton_sm&) = delete;
 
 
 };

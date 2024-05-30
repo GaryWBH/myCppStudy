@@ -6,43 +6,57 @@
 #include <memory>
 #include <functional>
 
-enum means
-{
+
+// 枚举表示方式
+enum means {
+    DEFAULT,
     BIKE,
     DRIVER
 };
 
-class way
-{
-    public:
+// 基类way
+class way {
+public:
     virtual void theWay2Company();
-    virtual ~way(){};
+    virtual ~way() {}
 };
 
-class bike:public way
-{
-    public:
-    void theWay2Company() override;
+// 派生类bike
+class bike : public way {
+public:
+    void theWay2Company() override ;
 };
 
-class driver: public way
-{
-    public:
-    void theWay2Company() override;
+// 派生类driver
+class driver : public way {
+public:
+    void theWay2Company() override ;
 };
 
-class factory
+// 工厂类
+class factory 
 {
-    private:
-    factory(){};
-    ~factory(){};
-    static std::unique_ptr<way,std::function<void(factory*)>> instance;
+private:
+    factory() {}
+    ~factory() {}
+private:    
+    static std::once_flag onceFlag;
     static std::mutex lock;
-    static void creatInstance(means);
+    static std::unique_ptr<factory,std::function<void(factory*)>> instance;
+    static void createInstance();
+public:
+    static factory* getInstance();
+    static std::unique_ptr<way> wayInstance;
+    way* getWayInstance(means);
+    
 
-    public:
-    static way* getInstance(means);
+    factory(const factory&) = delete;
+    factory& operator=(const factory&) = delete;
+    
+
 };
+
+
 
 
 

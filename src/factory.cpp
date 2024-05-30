@@ -1,7 +1,13 @@
 #include "factory.h"
 
 
-std::unique_ptr<way,std::function<void(factory*)>> factory::instance(nullptr,[](factory*){});
+// 初始化静态成员变量
+std::unique_ptr<factory, std::function<void(factory*)>> factory::instance(nullptr, [](factory* ptr)
+{
+   std::cout<<"delete ptr"<<std::endl;
+});
+std::unique_ptr<way> factory::wayInstance(nullptr);
+std::once_flag factory::onceFlag;
 
 std::mutex factory::lock;
 
@@ -12,34 +18,43 @@ void way::theWay2Company()
 
 void bike::theWay2Company()
 {
-    std::cout<<"you ride bike to company"<<std::endl;
+    std::cout<<"you ride to company"<<std::endl;
 }
 
 void driver::theWay2Company()
 {
-    std::cout<<"you driver a car to company"<<std::endl;
+    std::cout<<"you driver to company"<<std::endl;
 }
 
-void factory::creatInstance(means type)
+void factory::createInstance()
 {
-    switch (type)
-    {
-        case BIKE:
-            instance.reset(new bike());
-            break;
-        case DRIVER:
-            instance.reset(new driver());
-            break;
-        default:
-            instance.reset(new way());
-            break;
-    }
-
+    instance.reset(new factory());
+    return;
 }
 
-way* factory::getInstance(means type)
+factory* factory::getInstance()
 {
-       std::lock_guard(lock);
+    std::call_once(factory::onceFlag,&factory::createInstance);
+    return instance.get();
+    
+}
 
-       return instance.get();
+way* factory::getWayInstance(means type)
+{
+        std::lock_guard<std::mutex> lock_guard(factory::lock);
+       
+        switch (type) 
+        {
+            case BIKE:
+                wayInstance = std::make_unique<bike>();
+                break;
+            case DRIVER:
+                wayInstance = std::make_unique<driver>();
+                break;
+            default:
+                wayInstance = std::make_unique<way>();
+                break;
+        }
+        
+        return wayInstance.get();
 }

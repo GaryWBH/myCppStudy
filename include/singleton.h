@@ -29,13 +29,7 @@
 
 #ifndef SINGLETON_H
 #define SINGLETON_H
-
-#include <iostream>
-#include <mutex>
-#include <string>
-#include <memory>
-#include <functional>
-
+#include "common.h"
 /**
  * @brief 
  * 古老指针方式实现的单例 

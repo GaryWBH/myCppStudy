@@ -1,11 +1,6 @@
 #ifndef __FACTORY_H__
 #define __FACTORY_H__
-#include <iostream>
-#include <string>
-#include <mutex>
-#include <memory>
-#include <functional>
-
+#include "common.h"
 
 // 枚举表示方式
 enum means {

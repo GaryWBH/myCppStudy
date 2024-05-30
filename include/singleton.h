@@ -60,6 +60,9 @@ class singleton
         static singleton* getInstance();
         void mySingleton(std::string src);
 
+        singleton(const singleton&) = delete;
+        singleton& operator(const singleton&) = delete;
+
 };
 
 /**
@@ -80,6 +83,8 @@ class singleton_sm
         // 获取单例实例的静态方法
         static singleton_sm* getInstance() ;
         void mySingleton(std::string src);
+        singleton_sm(const singleton_sm&) = delete;
+        singleton_sm& operator(const singleton_sm&) = delete;
 
 
 };

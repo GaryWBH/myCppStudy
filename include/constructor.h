@@ -10,35 +10,27 @@
 
  * √ 3.拷贝构造函数：用于创建一个现有对象的副本。它接受一个对同类型对象的常量引用作为参数。
 
- * 4.移动构造函数（C++11及以后）：用于将资源从一个临时对象“移动”到目标对象，通常用于提升性能，避免不必要的拷贝。
+ * √ 4.移动构造函数（C++11及以后）：用于将资源从一个临时对象“移动”到目标对象，通常用于提升性能，避免不必要的拷贝。
 
- * 5.列表初始化：使用花括号{}来初始化对象，这可以适用于内置类型、聚合类型以及自定义类型的对象。
-
- * 6.委托构造函数（C++11及以后）：一个构造函数可以调用同一个类的另一个构造函数来执行其初始化任务。
-
- * 7.转换构造函数：接受一个其他类型的参数，并用于将该类型的对象转换为当前类的对象。
-
- * 8.拷贝赋值运算符：用于将一个对象的值复制到另一个已经存在的对象中。
-
- * 9.移动赋值运算符（C++11及以后）：用于将一个临时对象的资源“移动”到另一个对象中。
-
- * 10.初始化列表：在构造函数的函数体执行之前，使用初始化列表来初始化成员变量。
-
- * 11.在函数内部构造对象：可以在函数内部直接构造对象，这通常是通过调用构造函数来完成的。
-
- * 12.聚合初始化：对于聚合类型（如数组和结构体，其中结构体没有用户定义的构造函数、没有私有或受保护的成员、没有基类也没有虚函数），可以使用初始化列表来初始化。
-
- * 13.使用new关键字动态构造：通过new关键字在堆上动态地创建对象。
-
- * 14.使用std::make_unique或std::make_shared（C++11及以后）：在智能指针的上下文中构造对象，以确保对象的正确生命周期管理。
+ * √ 5.列表初始化：使用花括号{}来初始化对象，这可以适用于内置类型、聚合类型以及自定义类型的对象。
 
 */
 
 /**
  * @brief 
  * 构造函数调用接口
- */
+*/
+
 void constructExperss();
+
+typedef struct myStruct
+{
+    int id;
+    s_  name;
+    //初始化列表
+    myStruct():id(-1),name(""){};
+    myStruct(int id,const s_& name):id(id),name(name){};
+}myStruct;
 
 /**
  * @brief 
@@ -50,25 +42,27 @@ class defaultConstruct
 {
     private:
         s_ content;
+        myStruct ms;
     public:
-        //以后用这种初始化方式不用下面的那种，太啰嗦
+        //以后用这种初始化列表的方式,不用下面的那种，太啰嗦
         defaultConstruct():content("default"){};
-        defaultConstruct(s_ value):content(value){};
+        defaultConstruct(s_ value,int id,const s_& name):content(value),ms{id,name}{};
 
         /*啰嗦版
         defaultConstruct()
         {
-            num = 1;
+            content = "1";
         }
 
-        defaultConstruct(int value)
+        defaultConstruct(string value)
         {
-            num = value;
+            content = value;
         }
         */
         void outPutNum()
         {
-            c_<<content<<e_;
+            c_<<"content = "<<content<<e_;
+            c_<<"ms.id: "<<ms.id<<" ms.name: "<<ms.name<<e_;
         }
 };
 
@@ -80,6 +74,7 @@ class copyConstruct
 {
     private:
         s_ content;
+        myStruct ms;
 
     public:
         copyConstruct():content("param self")
@@ -87,19 +82,78 @@ class copyConstruct
             c_<<"default construct"<<e_;
         };
 
-        copyConstruct(s_ value):content(value)
+        copyConstruct(const s_& value,int id,const s_& name):content(value),ms{id,name}
         {
             c_<<"default construct with param"<<e_;
         };
 
-        copyConstruct(const copyConstruct& other):content(other.content)
+        copyConstruct(const copyConstruct& other):content(other.content),ms(other.ms)
         {
             c_<<"copy Construct"<<e_;
         };
         
         void outPutNum()
         {
-            c_<<content<<e_;
+            c_<<"content = "<<content<<e_;
+            c_<<"ms.id: "<<ms.id<<" ms.name: "<<ms.name<<e_;
+
         }
 
+        void ApiChangeStruct(const myStruct& src)
+        {
+            ms.id = src.id;
+            ms.name = src.name;
+        }
+    
+};
+
+/**
+ * @brief 
+ * 移动构造
+ */
+class moveConstruct
+{
+    private:
+        s_ content;
+        myStruct ms;
+    public:
+  
+        moveConstruct(const s_& value,int id,const s_& name):content(value),ms{id,name}
+        {
+            c_<<"parma construction"<<e_;
+        };
+        //右值引用
+        //左值引用主要用于避免有名字变量的复制，而右值引用则主要用于实现移动语义，以高效处理临时对象和即将被销毁的对象。
+        //右值引用通常用语处理大量数据的移动，接管一个临时变量等，详情见对应的章节
+        moveConstruct(moveConstruct&& other) noexcept :content(std::move(other.content)),ms(std::move(other.ms))
+        {
+             c_<<"move construction"<<e_;
+            other.content = "already release";
+            other.ms.id = -1;
+            other.ms.name = "null";
+        }
+        // 移动赋值运算符
+        moveConstruct& operator=(moveConstruct&& other) noexcept 
+        {
+            if (this != &other) { // 防止自赋值
+                content = std::move(other.content);
+                ms = std::move(other.ms);
+                // 在移动之后，other对象的状态可能是未定义的，这里简单设置为无效值
+                other.content = "already release-2";
+                other.ms.id = -1;
+                other.ms.name = "null=2";
+                std::cout << "move assignment" << std::endl;
+            }
+            return *this;
+        }
+
+        void outPutNum()
+        {
+            c_<<"content = "<<content<<e_;
+            c_<<"ms.id: "<<ms.id<<" ms.name: "<<ms.name<<e_;
+            return;
+        }
+
+        moveConstruct(const moveConstruct&) = delete;
+        moveConstruct& operator=(moveConstruct& ) = delete;
 };

@@ -105,6 +105,10 @@ void factoryMain()
     }
 }
 
+/**
+ * @brief 
+ * 构造学习
+ */
 void constructMain()
 {
     constructExperss();
